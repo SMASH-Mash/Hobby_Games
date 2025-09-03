@@ -518,7 +518,7 @@ def draw_board():
     draw_button(screen, main_btn_rect, "Main Menu")
     draw_button(screen, help_btn_rect, "Help")
 
-    # Status text
+    # Status text (moved into side panel under the buttons)
     w = check_winner(board)
     if w is None:
         txt = f"Turn: {current_player}  |  {BOARD_N}x{BOARD_N}  win={WIN_LENGTH}"
@@ -527,10 +527,12 @@ def draw_board():
     else:
         txt = f"{w} wins! Press R to restart"
     text_surf = small_font.render(txt, True, (180, 200, 230))
-    screen.blit(text_surf, (MARGIN, WINDOW_SIZE - MARGIN))
+    status_x = PANEL_RECT.left + 16
+    status_y = help_btn_rect.bottom + 12
+    screen.blit(text_surf, (status_x, status_y))
 
-    # Small legend inside panel
-    legend_y = help_btn_rect.bottom + 20
+    # Small legend inside panel (placed below the status text)
+    legend_y = status_y + text_surf.get_height() + 12
     hint_lines = [
         f"Board: {BOARD_N}x{BOARD_N}",
         f"Win length: {WIN_LENGTH}",
