@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import QUIT, MOUSEBUTTONDOWN, KEYDOWN, K_r, K_u
 
 """
-Neon Tic-Tac-Toe (adjustable grid) with Alpha-Beta pruning
+Tic-Tac-Toe (adjustable grid) with Alpha-Beta pruning
 ----------------------------------------------------------
 - Left click to place your mark (Player X by default).
 - Press R to restart, U to undo last human move (if allowed).
@@ -30,11 +30,11 @@ PANEL_WIDTH = 220  # Width of the side panel where buttons live
 LINE_THICKNESS = 4
 FPS = 60
 
-# Neon palette
+# color palette
 BG_COLOR = (8, 10, 20)
-NEON_GRID = (0, 255, 200)
-NEON_X = (255, 70, 130)
-NEON_O = (50, 150, 255)
+Game_GRID = (0, 255, 200)
+X_Dim = (255, 70, 130)
+O_Dim = (50, 150, 255)
 GLOW_STEPS = 8  # quality/speed tradeoff
 
 # Search limits (for larger boards)
@@ -49,7 +49,7 @@ WIN_LENGTH = BOARD_N if WIN_LENGTH is None else WIN_LENGTH
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
-pygame.display.set_caption(f"Neon Tic-Tac-Toe {BOARD_N}x{BOARD_N}")
+pygame.display.set_caption(f"Tic-Tac-Toe {BOARD_N}x{BOARD_N}")
 font = pygame.font.SysFont("Montserrat", 28)
 small_font = pygame.font.SysFont("Montserrat", 20)
 
@@ -74,7 +74,7 @@ def prepare_game():
 def draw_button(surf, rect, text, active=True):
     color_bg = (30, 40, 60) if active else (20, 25, 35)
     pygame.draw.rect(surf, color_bg, rect, border_radius=6)
-    pygame.draw.rect(surf, NEON_GRID, rect, 2, border_radius=6)
+    pygame.draw.rect(surf, Game_GRID, rect, 2, border_radius=6)
     txt = small_font.render(text, True, (220, 230, 255))
     txt_r = txt.get_rect(center=rect.center)
     surf.blit(txt, txt_r)
@@ -98,7 +98,7 @@ def help_screen():
     # Simple overlay with rules and close button
     running_help = True
     lines = [
-        "Neon Tic-Tac-Toe — Help",
+        "Tic-Tac-Toe — Help",
         "",
         "Left click to place your mark.",
         "Press R to restart current game. Press U to undo last human move (if allowed).",
@@ -131,7 +131,7 @@ def help_screen():
         # Panel
         panel = pygame.Rect(60, 60, WINDOW_SIZE - 120, WINDOW_SIZE - 140)
         pygame.draw.rect(screen, (10, 15, 30), panel, border_radius=8)
-        pygame.draw.rect(screen, NEON_GRID, panel, 2, border_radius=8)
+        pygame.draw.rect(screen, Game_GRID, panel, 2, border_radius=8)
 
         # Draw lines
         start_y = 100
@@ -241,8 +241,8 @@ def settings_screen():
             right = pygame.Rect(centerx + 120, y + 10, 40, 36)
             pygame.draw.rect(screen, (18, 24, 40), left, border_radius=6)
             pygame.draw.rect(screen, (18, 24, 40), right, border_radius=6)
-            pygame.draw.rect(screen, NEON_GRID, left, 2, border_radius=6)
-            pygame.draw.rect(screen, NEON_GRID, right, 2, border_radius=6)
+            pygame.draw.rect(screen, Game_GRID, left, 2, border_radius=6)
+            pygame.draw.rect(screen, Game_GRID, right, 2, border_radius=6)
 
             lt = small_font.render("<", True, (220, 240, 255))
             rt = small_font.render(">", True, (220, 240, 255))
@@ -445,7 +445,7 @@ def ai_choose_move(b):
 
 
 # ============================
-# Rendering (neon glow)
+# Rendering  
 # ============================
 
 def draw_glow_line(surf, start, end, color, thickness=4):
@@ -478,12 +478,12 @@ def draw_board():
         x = GRID_ORIGIN[0] + i * CELL_SIZE
         y1 = GRID_ORIGIN[1]
         y2 = GRID_ORIGIN[1] + BOARD_N * CELL_SIZE
-        draw_glow_line(screen, (x, y1), (x, y2), NEON_GRID, LINE_THICKNESS)
+        draw_glow_line(screen, (x, y1), (x, y2), Game_GRID, LINE_THICKNESS)
     for i in range(1, BOARD_N):
         y = GRID_ORIGIN[1] + i * CELL_SIZE
         x1 = GRID_ORIGIN[0]
         x2 = GRID_ORIGIN[0] + BOARD_N * CELL_SIZE
-        draw_glow_line(screen, (x1, y), (x2, y), NEON_GRID, LINE_THICKNESS)
+        draw_glow_line(screen, (x1, y), (x2, y), Game_GRID, LINE_THICKNESS)
 
     # Marks
     pad = CELL_SIZE // 6
@@ -498,16 +498,16 @@ def draw_board():
                 p2 = (rect.right - pad, rect.bottom - pad)
                 p3 = (rect.right - pad, rect.top + pad)
                 p4 = (rect.left + pad, rect.bottom - pad)
-                draw_glow_line(screen, p1, p2, NEON_X, LINE_THICKNESS)
-                draw_glow_line(screen, p3, p4, NEON_X, LINE_THICKNESS)
+                draw_glow_line(screen, p1, p2, X_Dim, LINE_THICKNESS)
+                draw_glow_line(screen, p3, p4, X_Dim, LINE_THICKNESS)
             elif mark == 'O':
                 center = rect.center
                 radius = (CELL_SIZE // 2) - pad
-                draw_glow_circle(screen, center, radius, NEON_O, LINE_THICKNESS)
+                draw_glow_circle(screen, center, radius, O_Dim, LINE_THICKNESS)
 
     # Side panel (menu/help)
     pygame.draw.rect(screen, (10, 12, 20), PANEL_RECT, border_radius=8)
-    pygame.draw.rect(screen, NEON_GRID, PANEL_RECT, 2, border_radius=8)
+    pygame.draw.rect(screen, Game_GRID, PANEL_RECT, 2, border_radius=8)
 
     # Buttons inside panel
     btn_w = PANEL_RECT.width - 32
