@@ -168,7 +168,8 @@ class Game:
                     self.available_numbers[self.current_player].remove(self.selected_number)
                     self.last_placed = idx
                     self.selected_number=None
-                    if all(v is not None for v in self.board[:-1]):
+                    # changed: detect game end when exactly one empty (the black hole) remains
+                    if self.board.count(None) == 1:
                         self.determine_winner()
                         return
                     self.current_player = 2 if self.current_player==1 else 1
@@ -196,7 +197,8 @@ class Game:
             self.board[idx] = (2,num)
             self.available_numbers[2].remove(num)
             self.last_placed = idx
-            if all(v is not None for v in self.board[:-1]):
+            # changed: detect game end when exactly one empty (the black hole) remains
+            if self.board.count(None) == 1:
                 self.determine_winner()
                 return
             self.current_player = 1
