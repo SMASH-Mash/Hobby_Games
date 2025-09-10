@@ -46,23 +46,53 @@ class Game:
     def draw_menu(self):
         SCREEN.fill(BLACK)
         title = BIGFONT.render("Black Hole Pyramid", True, RED)
-        SCREEN.blit(title, (WIDTH//2 - title.get_width()//2, 50))
+        # moved title a little down to give more vertical space
+        SCREEN.blit(title, (WIDTH//2 - title.get_width()//2, 40))
+
         # Buttons
         self.main_menu_buttons = []
-        pvp_btn = pygame.Rect(WIDTH//2 - 100, 200, 200, 50)
+        # wider and slightly taller buttons and spaced further apart
+        pvp_btn = pygame.Rect(WIDTH//2 - 120, 160, 240, 60)
         pygame.draw.rect(SCREEN, RED, pvp_btn)
         txt = FONT.render("Play vs Player", True, BLACK)
         SCREEN.blit(txt, (pvp_btn.centerx - txt.get_width()//2, pvp_btn.centery - txt.get_height()//2))
         self.main_menu_buttons.append(("pvp", pvp_btn))
 
-        pvai_btn = pygame.Rect(WIDTH//2 - 100, 300, 200, 50)
+        pvai_btn = pygame.Rect(WIDTH//2 - 120, 240, 240, 60)
         pygame.draw.rect(SCREEN, RED, pvai_btn)
         txt2 = FONT.render("Play vs AI", True, BLACK)
         SCREEN.blit(txt2, (pvai_btn.centerx - txt2.get_width()//2, pvai_btn.centery - txt2.get_height()//2))
         self.main_menu_buttons.append(("pvai", pvai_btn))
 
-        depth_txt = FONT.render(f"AI Depth: {self.ai_depth}", True, RED)
-        SCREEN.blit(depth_txt, (WIDTH//2 - depth_txt.get_width()//2, 400))
+        # AI depth controls: label plus +/- buttons
+        depth_y = 340
+        depth_label = FONT.render("AI Depth:", True, RED)
+        SCREEN.blit(depth_label, (WIDTH//2 - 80, depth_y + 10))
+
+        # minus button
+        minus_rect = pygame.Rect(WIDTH//2 - 10 - 80, depth_y, 40, 40)
+        pygame.draw.rect(SCREEN, GRAY, minus_rect)
+        minus_txt = FONT.render("-", True, BLACK)
+        SCREEN.blit(minus_txt, (minus_rect.centerx - minus_txt.get_width()//2, minus_rect.centery - minus_txt.get_height()//2))
+        self.main_menu_buttons.append(("depth_minus", minus_rect))
+
+        # current depth display
+        depth_txt = FONT.render(str(self.ai_depth), True, RED)
+        depth_box = pygame.Rect(WIDTH//2 - 10, depth_y, 60, 40)
+        pygame.draw.rect(SCREEN, BLACK, depth_box)
+        pygame.draw.rect(SCREEN, RED, depth_box, 2)
+        SCREEN.blit(depth_txt, (depth_box.centerx - depth_txt.get_width()//2, depth_box.centery - depth_txt.get_height()//2))
+
+        # plus button
+        plus_rect = pygame.Rect(WIDTH//2 + 70, depth_y, 40, 40)
+        pygame.draw.rect(SCREEN, GRAY, plus_rect)
+        plus_txt = FONT.render("+", True, BLACK)
+        SCREEN.blit(plus_txt, (plus_rect.centerx - plus_txt.get_width()//2, plus_rect.centery - plus_txt.get_height()//2))
+        self.main_menu_buttons.append(("depth_plus", plus_rect))
+
+        # small helper text
+        hint = FONT.render("Use +/- to change AI search depth (1-6)", True, WHITE)
+        SCREEN.blit(hint, (WIDTH//2 - hint.get_width()//2, depth_y + 60))
 
     def draw_board(self):
         SCREEN.fill(BLACK)
@@ -113,10 +143,18 @@ class Game:
                 if btn.collidepoint(pos):
                     if name=="pvp":
                         self.vs_ai=False
-                    else:
+                        self.state="playing"
+                        self.reset_game()
+                    elif name=="pvai":
                         self.vs_ai=True
-                    self.state="playing"
-                    self.reset_game()
+                        self.state="playing"
+                        self.reset_game()
+                    elif name=="depth_minus":
+                        # clamp minimum depth to 1
+                        self.ai_depth = max(1, self.ai_depth - 1)
+                    elif name=="depth_plus":
+                        # clamp maximum depth to 6 to avoid huge compute times
+                        self.ai_depth = min(6, self.ai_depth + 1)
         elif self.state=="playing":
             # Check number panel clicks
             for num,rect in self.num_panels[self.current_player]:
