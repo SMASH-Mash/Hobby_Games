@@ -257,19 +257,48 @@ class Game:
         self.state="gameover"
 
     def get_adjacent(self, idx):
-        layer = int((math.sqrt(8*idx+1)-1)//2)
-        pos = idx - layer*(layer+1)//2
-        neighbors=[]
-        if layer>0:
-            above_start=(layer-1)*layer//2
-            neighbors.append(above_start+pos)
-            if pos>0:
-                neighbors.append(above_start+pos-1)
-        if layer<5:
-            below_start=(layer+1)*(layer+2)//2 - (layer+1)
-            neighbors.append(below_start+pos)
-            neighbors.append(below_start+pos+1)
-        return [n for n in neighbors if 0<=n<21]
+        if idx==0:
+            return [1,2]
+        elif idx==1:
+            return [0,2,3,4]
+        elif idx==2:
+            return [0,1,4,5]
+        elif idx==3:
+            return [1,4,6,7]
+        elif idx==4:
+            return [1,2,3,5,7,8]
+        elif idx==5:
+            return [2,4,8,9]
+        elif idx==6:
+            return [3,7,10,11]
+        elif idx==7:
+            return [3,4,6,8,11,12]
+        elif idx==8:
+            return [4,5,7,9,12,13]
+        elif idx==9:
+            return [5,8,13,14]
+        elif idx==10:
+            return [6,11,15,16]
+        elif idx==11:
+            return [6,7,10,12,16,17]
+        elif idx==12:
+            return [7,8,11,13,17,18]
+        elif idx==13:
+            return [8,9,12,14,18,19]
+        elif idx==14:
+            return [9,13,19,20]
+        elif idx==15:
+            return [10,16]
+        elif idx==16:
+            return [10,11,15,17]
+        elif idx==17:
+            return [11,12,16,18]
+        elif idx==18:
+            return [12,13,17,19]
+        elif idx==19:
+            return [13,14,18,20]
+        elif idx==20:
+            return [14,19]
 
     def reset_game(self):
         self.board = [None]*21
